@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import { Container, Row, Col } from 'react-bootstrap';
 import LineChart from './LineChart';
-import './styles.css'
+
 export default class Currency extends Component {
 
 
@@ -59,7 +59,7 @@ export default class Currency extends Component {
         const { options, value } = this.state;
         return (
 
-            <div className="wrapper" style={{ padding: "20px" }}>
+            <div style={{ padding: "20px" }}>
                 <Container>
                     <Row>
                         <Col xs={4}>
@@ -84,8 +84,8 @@ export default class Currency extends Component {
                             <LineChart unit={this.state.value} />
                         </Col>
                     </Row>
-
                 </Container>
+
             </div >
         )
     }

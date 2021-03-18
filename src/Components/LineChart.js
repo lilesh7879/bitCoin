@@ -1,82 +1,71 @@
-import React from 'react'
-import { Line } from 'react-chartjs-2';
-import axios from 'axios';
-
+import React, { useEffect, useState } from "react";
+import { Line } from "react-chartjs-2";
+import axios from "axios";
 
 var coinValue = [];
 var chartData = {
     labels: [],
 
-    datasets: []
-}
+    datasets: [],
+};
 
-export default class lineChart extends React.Component {
-    state = {
-        responses: [],
-        units: [],
-        chartValues: [],
-        labels: []
+export default function LineChart(props) {
+    const [responses, setResponses] = useState([]);
+    const [chartValues, setChartValues] = useState([]);
+    const [labels, setLabels] = useState([]);
 
-    }
-
-
-
-    renderChart() {
-
-    }
-    componentWillMount() {
-        var startDate = '2013-09-01';
-        var endDate = '2013-09-10';
-        axios.get(`https://api.coindesk.com/v1/bpi/historical/close.json?currency=${this.props.unit}&start=${startDate}&end=${endDate}`)
-            .then(res => {
+    useEffect(() => {
+        var startDate = "2013-09-01";
+        var endDate = "2013-09-10";
+        axios
+            .get(
+                `https://api.coindesk.com/v1/bpi/historical/close.json?currency=${props.unit}&start=${startDate}&end=${endDate}`
+            )
+            .then((res) => {
                 const responses = res.data;
-                this.setState({ responses });
+                setResponses(responses);
 
                 var values = Object.values(responses.bpi);
                 var Key = Object.keys(responses.bpi);
-                coinValue = values
-                console.log("componentWillMount")
-                this.setState({ labels: Key })
-                this.setState({ chartValues: chartData });
-            })
-    }
-    render() {
-        console.log(this.props.unit);
-        return (
-            <div key={this.props.unit}>
-                <Line
-                    data={{
-                        labels: this.state.labels,
-                        datasets: [
-                            {
-                                label: "Bitcoin Value",
-                                fill: true,
-                                lineTension: 0,
-                                backgroundColor: "rgba(75,192,192,0.4)",
-                                borderColor: "#71C898",
-                                pointBorderColor: "#71C898",
-                                data: coinValue,
-                            }],
-                    }}
-                    options={{
-                        title: {
-                            display: false,
-                            text: 'Bit Coin',
-                            fontSize: 20
+                coinValue = values;
+                setLabels(Key);
+                setChartValues(chartData);
+            });
+    }, [props.unit]);
+    return (
+        <div key={props.unit}>
+            <Line
+                data={{
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: "Bitcoin Value",
+                            fill: true,
+                            lineTension: 0,
+                            backgroundColor: "rgba(75,192,192,0.4)",
+                            borderColor: "#71C898",
+                            pointBorderColor: "#71C898",
+                            data: coinValue,
                         },
-                        legend: {
-                            display: true,
-                            position: 'right'
+                    ],
+                }}
+                options={{
+                    title: {
+                        display: false,
+                        text: "Bit Coin",
+                        fontSize: 20,
+                    },
+                    legend: {
+                        display: true,
+                        position: "right",
+                    },
+                    elements: {
+                        line: {
+                            tension: 0, // disables bezier curves
                         },
-                        elements: {
-                            line: {
-                                tension: 0 // disables bezier curves
-                            }
-                        }
-                    }}
-                />
-
-            </div>
-        );
-    }
+                    },
+                }}
+            />
+        </div>
+    );
 }
